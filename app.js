@@ -43,9 +43,11 @@ app.post('/insert', (req, res) => {
     // res.send("INSERT")
     // console.log(req.body);
     const newTravel = req.body
+    newTravel.ruta = "/" + newTravel.ruta
+    // El precio viene del formulario como string, hay que pasarlo a número
     newTravel.precio = parseFloat(newTravel.precio)
     jsonData.push(newTravel)
-    console.log(jsonData)
+    // console.log(jsonData)
     fs.writeFileSync(path.join(__dirname, "data", "travels.json"), JSON.stringify(jsonData, null, 2), "utf-8")
     res.redirect("/admin")
 })
