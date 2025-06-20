@@ -53,6 +53,23 @@ app.post('/insert', (req, res) => {
     res.redirect("/admin")
 })
 
+app.put("/update/:id", (req, res) => {
+    // console.log(req.params.id);
+    // console.log(req.body);
+    const idChange = req.params.id
+    const travelChanged = req.body
+
+    const newData = jsonData.filter(travel => travel.id != idChange)
+
+    if (travelChanged.ruta[0] != "/") travelChanged.ruta = "/" + travelChanged.ruta    
+    // El precio viene del formulario como string, hay que pasarlo a número
+    travelChanged.precio = parseFloat(travelChanged.precio)
+    newData.push(travelChanged)
+    console.log(newData)
+    fs.writeFileSync(path.join(__dirname, "data", "travels.json"), JSON.stringify(newData, null, 2), "utf-8")
+    res.redirect("/admin")
+})
+
 app.delete("/delete/:id", (req, res) => {
     // id del elemento a eliminar
     const idDelete = req.params.id;

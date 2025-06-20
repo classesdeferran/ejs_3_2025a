@@ -5,13 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Travels admin</title>
     <link rel="stylesheet" href="css/admin.css" />
-    <script src="js/admin.js"></script>
+    <script src="js/admin.js" defer></script>
   </head>
   <body>
     <header>
       <h1>Administración de Express travels</h1>
     </header>
     <main>
+      <section id="update">
+        <h2>Modifica los datos :</h2> 
+        <form name="update">
+          <input type="hidden" id="id_update" name="id_update">
+          <div>
+            <label for="ruta_update">Ruta (URL) : </label>
+            <input type="text" id="ruta_update" name="ruta_update" />
+          </div>
+          <div>
+            <label for="lugar_update">Lugar : </label>
+            <input type="text" id="lugar_update" name="lugar_update" />
+          </div>
+            <label for="nombre_update">Nombre del viaje: </label>
+            <input type="text" id="nombre_update" name="nombre_update" />
+          </div>
+          <div>
+            <label for="descripcion_update">Descripción : </label>
+            <input type="text" id="descripcion_update" name="descripcion_update" />
+          </div>
+                    </div>
+                      <label for="precio_update">Precio : </label>
+            <input type="text" id="precio_update" name="precio_update" />
+          </div>
+          <div>
+            <label for="img_update">Ruta de la imagen : </label>
+            <input type="text" id="img_update" name="img_update" />
+          </div>
+          <div id="buttons">
+            <button type="submit">Aceptar</button>
+            <button type="reset">Borrar</button>
+          </div>
+        </form>
+      </section>
       <section id="insert">
         <h2>Añade el próximo viaje :</h2> 
         <form action="/insert" method="POST">
@@ -60,7 +93,7 @@
             <td><%= travel.lugar %></td>
             <td><%= travel.nombre %></td>
             <td><%= travel.precio %></td>
-            <td><button><img src="icons/lapiz.png" alt="Lápiz para editar" /></button> </td>              
+            <td><button onclick="editarDestino('<%= JSON.stringify(travel) %>')"><img src="icons/lapiz.png" alt="Lápiz para editar" /></button> </td>              
             <td><button onclick="borrarDestino('<%= travel.id %>')"><img src="icons/borrar.png" alt="Elemento borrado" /></button></td>
               
           </tr>
@@ -69,7 +102,50 @@
       </section>
     </main>
     <script>
-      
+      function editarDestino(travel) {
+        sectionInsert.style.display = "none"
+        sectionUpdate.style.display = "block"
+
+        // Recodificar los datos recibidos por argumento
+        let data = JSON.parse(travel)
+    
+        console.log(data.id);
+        document.getElementById("id_update").value = data.id
+        document.getElementById('ruta_update').value = data.ruta
+        document.getElementById('lugar_update').value = data.lugar
+        document.getElementById("nombre_update").value = data.nombre
+        document.getElementById('descripcion_update').value = data.descripcion
+        document.getElementById("precio_update").value = data.precio
+        document.getElementById('img_update').value = data.img
+      }
+
+      const formUpdate = document.forms['update']
+
+      formUpdate.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        let dataChanged = {}
+        dataChanged.id = formUpdate["id_update"].value
+        dataChanged.ruta = formUpdate["ruta_update"].value
+        dataChanged.lugar = formUpdate["lugar_update"].value
+        dataChanged.nombre = formUpdate["nombre_update"].value
+        dataChanged.descripcion = formUpdate["descripcion_update"].value
+        dataChanged.precio = formUpdate["precio_update"].value
+        dataChanged.img = formUpdate["img_update"].value
+        // console.log(dataChanged);
+
+        fetch(`/update/${dataChanged.id}`,
+          { method : "PUT",
+            headers : {"Content-Type": "application/json"},
+            body: JSON.stringify(dataChanged)
+          }
+        )
+        .then(response => response.json())
+        .then( setTimeout(() => location.reload() , 300))
+        .catch(error => console.log(error))
+
+      })
+
 
     </script>
   </body>
