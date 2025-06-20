@@ -1,6 +1,6 @@
 const path = require('node:path') // para las rutas de los recursos estáticos
 const fs = require('node:fs') // para escribir en el fichero json
-const crypto = require('node:crypto') // para obtener la información por POST
+const crypto = require('node:crypto') // para generar un id único y aleatorio
 const express = require('express') // para definir el servidor
 const app = express()
 
@@ -43,7 +43,8 @@ app.post('/insert', (req, res) => {
     // res.send("INSERT")
     // console.log(req.body);
     const newTravel = req.body
-    newTravel.ruta = "/" + newTravel.ruta
+    newTravel.id = crypto.randomUUID()
+    if (newTravel.ruta[0] != "/") newTravel.ruta = "/" + newTravel.ruta    
     // El precio viene del formulario como string, hay que pasarlo a número
     newTravel.precio = parseFloat(newTravel.precio)
     jsonData.push(newTravel)
@@ -52,7 +53,14 @@ app.post('/insert', (req, res) => {
     res.redirect("/admin")
 })
 
-
+app.delete("/delete/:id", (req, res) => {
+    // id del elemento a eliminar
+    const idDelete = req.params.id;
+    const newData = jsonData.filter(travel => travel.id != idDelete)
+    // console.log(newData);
+    fs.writeFileSync(path.join(__dirname, "data", "travels.json"), JSON.stringify(newData, null, 2), "utf-8")
+    res.redirect("/admin")
+})
 
 app.listen(PORT, () => {
     console.log(`Servidor iniciado en http://localhost:${PORT}`);

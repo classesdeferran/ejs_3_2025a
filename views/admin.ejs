@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Travels admin</title>
     <link rel="stylesheet" href="css/admin.css" />
+    <script src="js/admin.js"></script>
   </head>
   <body>
     <header>
@@ -59,12 +60,17 @@
             <td><%= travel.lugar %></td>
             <td><%= travel.nombre %></td>
             <td><%= travel.precio %></td>
-            <td><img src="icons/lapiz.png" alt="Lápiz para editar" /></td>
-            <td><img src="icons/borrar.png" alt="Elemento borrado" /></td>
+            <td><button><img src="icons/lapiz.png" alt="Lápiz para editar" /></button> </td>              
+            <td><button onclick="borrarDestino('<%= travel.id %>')"><img src="icons/borrar.png" alt="Elemento borrado" /></button></td>
+              
           </tr>
           <% }) %>
         </table>
       </section>
     </main>
+    <script>
+      
+
+    </script>
   </body>
 </html>
